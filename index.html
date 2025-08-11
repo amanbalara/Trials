@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dear Parav — A Little Riddle Note</title>
+  <style>
+    :root{
+      --bg:#fff7ff;
+      --card:#ffffff;
+      --accent:#6b4eff;
+      --muted:#6b6b7a;
+      --glass: rgba(255,255,255,0.6);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: radial-gradient(1200px 600px at 10% 10%, #fff0f8 0%, transparent 8%),
+                  radial-gradient(1000px 400px at 90% 90%, #f0f7ff 0%, transparent 10%),
+                  var(--bg);
+      color:#2b2b3a;
+      padding:32px;
+    }
+    .wrap{width:100%;max-width:820px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    h1{font-size:28px;margin:0;color:var(--accent);letter-spacing:0.2px}
+    .sub{font-size:13px;color:var(--muted)}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.98));
+      border-radius:18px;padding:20px;box-shadow: 0 6px 28px rgba(107,78,255,0.08);
+      backdrop-filter: blur(6px);border:1px solid rgba(107,78,255,0.06);
+    }
+    .riddle-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:14px}
+    .riddle{
+      background:var(--card);padding:14px;border-radius:12px;position:relative;overflow:hidden;
+      transition:transform .18s ease, box-shadow .18s ease;
+      border:1px solid rgba(43,43,58,0.04);
+    }
+    .riddle:hover{transform:translateY(-6px);box-shadow:0 18px 36px rgba(43,43,58,0.06)}
+    .riddle h3{margin:0;font-size:15px;color:#2b2b3a}
+    .riddle p{margin:8px 0 12px;color:var(--muted);font-size:13px}
+    .btn{appearance:none;border:0;padding:8px 10px;border-radius:10px;background:linear-gradient(90deg,var(--accent),#8f6bff);color:white;font-weight:600;cursor:pointer;font-size:13px}
+    .answer{font-weight:700;margin-top:8px;display:none;color:#0b3b17}
+    footer{display:flex;justify-content:space-between;align-items:center;margin-top:18px;font-size:13px;color:var(--muted)}
+    .meta{font-size:12px;color:var(--muted)}
+    .small-note{font-size:12px;margin-top:10px;color:var(--muted)}
+    .spark{font-size:22px;margin-left:8px}
+    .heart{color:#ff6b9a}
+    @media (max-width:420px){h1{font-size:22px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Dear Parav</h1>
+        <div class="sub">A tiny playful note — just for peace of mind ✨</div>
+      </div>
+      <div class="meta">Made by aman · tech buddy neo</div>
+    </header>
+
+    <div class="card">
+      <p class="small-note">Hey Parav — guess these riddles with a smile. Tap <strong>Show</strong> to reveal answers. They're little metaphors: present, but not prying.</p>
+
+      <div class="riddle-list">
+        <div class="riddle" id="r1">
+          <h3>1) "I have keys but open no doors. I know the way but never walk it."</h3>
+          <p>What's the answer?</p>
+          <button class="btn" onclick="reveal('r1')">Show answer</button>
+          <div class="answer">Answer: A map</div>
+        </div>
+
+        <div class="riddle" id="r2">
+          <h3>2) "I'm always around but never in your way. You can see me, but I never touch your things."</h3>
+          <p>What's the answer?</p>
+          <button class="btn" onclick="reveal('r2')">Show answer</button>
+          <div class="answer">Answer: Light</div>
+        </div>
+
+        <div class="riddle" id="r3">
+          <h3>3) "I can hear but never repeat, I can see but never peek."</h3>
+          <p>What's the answer?</p>
+          <button class="btn" onclick="reveal('r3')">Show answer</button>
+          <div class="answer">Answer: A closed book</div>
+        </div>
+
+        <div class="riddle" id="r4">
+          <h3>4) "I travel everywhere but leave nothing behind."</h3>
+          <p>What's the answer?</p>
+          <button class="btn" onclick="reveal('r4')">Show answer</button>
+          <div class="answer">Answer: The wind</div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;display:flex;gap:10px;align-items:center">
+        <button class="btn" onclick="revealAll()">Reveal all</button>
+        <button class="btn" style="background:transparent;border:1px solid rgba(107,78,255,0.12);color:var(--accent)" onclick="shuffleRiddles()">Shuffle riddles</button>
+      </div>
+
+    </div>
+
+    <footer>
+      <div>with ❤️, Aman · tech buddy Neo <span class="spark">✨</span></div>
+      <div style="font-size:12px;color:var(--muted)">P.S. No peeking into anyone's things — only smiles allowed.</div>
+    </footer>
+  </div>
+
+  <script>
+    function reveal(id){
+      const box = document.getElementById(id);
+      const ans = box.querySelector('.answer');
+      if(ans.style.display === 'block') ans.style.display = 'none';
+      else ans.style.display = 'block';
+    }
+    function revealAll(){
+      document.querySelectorAll('.answer').forEach(a=>a.style.display='block');
+    }
+    function shuffleRiddles(){
+      const list = document.querySelector('.riddle-list');
+      const items = Array.from(list.children);
+      for(let i=items.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [items[i],items[j]] = [items[j],items[i]];
+      }
+      list.innerHTML='';
+      items.forEach(it=>list.appendChild(it));
+    }
+  </script>
+</body>
+</html>
+  
