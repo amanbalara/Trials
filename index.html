@@ -1,167 +1,87 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Hey — I'm Here (Friendly Support)</title>
-  <style>
-    :root{
-      --bg:#f7fbff;--card:#ffffff;--accent:#1e90ff;--muted:#6b7280;
-      --good:#16a34a;--warn:#f59e0b;--danger:#ef4444;
-      --glass: rgba(255,255,255,0.6);
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;background:linear-gradient(180deg,#f0f8ff 0%,var(--bg) 40%);color:#0f172a}
-    .wrap{max-width:880px;margin:28px auto;padding:18px}
-    header{display:flex;align-items:center;justify-content:space-between}
-    h1{margin:0;font-size:22px;color:var(--accent)}
-    .by{font-size:13px;color:var(--muted)}
-    .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.06);margin-top:14px}
-    .grid{display:grid;grid-template-columns:1fr 320px;gap:14px}
-    @media (max-width:880px){.grid{grid-template-columns:1fr}}
-    h2{font-size:16px;margin:0 0 8px}
-    p{margin:0 0 12px;color:var(--muted)}
-    ul{margin:8px 0 12px 18px;color:var(--muted)}
-    .btn{display:inline-block;padding:8px 12px;border-radius:10px;border:0;background:var(--accent);color:white;font-weight:600;cursor:pointer}
-    .subtle{background:transparent;border:1px solid rgba(15,23,42,0.06);padding:8px;border-radius:8px}
-    .template{background:#f8fafc;border-radius:8px;padding:10px;margin-bottom:10px;font-size:14px;color:#07103a}
-    .copy{background:linear-gradient(90deg,var(--accent),#3db0ff);color:white;padding:8px 10px;border-radius:8px;border:0;cursor:pointer}
-    .hint{font-size:13px;color:var(--muted)}
-    .footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:13px;color:var(--muted)}
-    .warning{color:var(--danger);font-weight:700}
-    .pill{display:inline-block;padding:6px 8px;border-radius:999px;background:#eef2ff;color:var(--accent);font-weight:600;font-size:13px}
-  </style>
+    <meta charset="UTF-8">
+    <title>Stay Inspired to Study</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f8ff;
+            text-align: center;
+            padding: 40px;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .quote {
+            font-size: 1.5em;
+            margin: 20px auto;
+            max-width: 600px;
+            font-style: italic;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 1em;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1e8449;
+        }
+        #timer {
+            font-size: 2em;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div>
-        <h1>Hey — I'm Here</h1>
-        <div class="by">A friendly one-page support note you can share with friends</div>
-      </div>
-      <div class="by">Made by Aman · tech buddy Neo</div>
-    </header>
 
-    <div class="card grid">
-      <main>
-        <section>
-          <h2>Why this is for them</h2>
-          <p>This page is gentle and non-judgemental — designed to open conversation with someone who might be spending too much time or money on online betting. Share it with them or show it in person.</p>
-        </section>
+    <h1>📚 Let's Get Inspired to Study!</h1>
 
-        <section>
-          <h2>Signs you might notice</h2>
-          <ul>
-            <li>Spending more money than intended or hiding transactions</li>
-            <li>Reduced sleep, mood swings, secrecy, or constant checking of apps</li>
-            <li>Arguments about money or distancing from friends/family</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>How to start the talk (gentle templates)</h2>
-          <p class="hint">Click a message to copy — use your own words to sound natural.</p>
-
-          <div id="templates">
-            <div class="template" data-text="Hey, I care about you — I’ve noticed you seem stressed about betting lately. Can we talk?">Hey, I care about you — I’ve noticed you seem stressed about betting lately. Can we talk?</div>
-            <div class="template" data-text="I’m worried about you. I’m here if you want help setting limits or taking a break together.">I’m worried about you. I’m here if you want help setting limits or taking a break together.</div>
-            <div class="template" data-text="You’re important to me. If you ever want to cut back, I can help block apps or sit with you when you’re tempted.">You’re important to me. If you ever want to cut back, I can help block apps or sit with you when you’re tempted.</div>
-          </div>
-        </section>
-
-        <section>
-          <h2>Practical steps (what you can offer)</h2>
-          <ul>
-            <li>Offer to block or uninstall betting apps together for a test period.</li>
-            <li>Set shared limits: daily/weekly money or time caps.</li>
-            <li>Replace the habit: sports, gym, study session, or a quick walk.</li>
-            <li>Help track spending for a week — non-judgmental and private.</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>When to encourage professional help</h2>
-          <p>If they keep losing control, borrow money, or feel hopeless, suggest talking to a counsellor or a helpline. Be patient — push gently, not forcefully.</p>
-        </section>
-
-      </main>
-
-      <aside class="subtle">
-        <h2 style="margin-top:0">Quick tools</h2>
-        <p class="hint">Use these to act fast and kindly.</p>
-
-        <div style="margin-bottom:10px">
-          <div style="font-weight:700;margin-bottom:6px">One-click messages</div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <button class="copy" onclick="copyText(0)">Copy: I’m here if you want to talk</button>
-            <button class="copy" style="background:linear-gradient(90deg,#16a34a,#38bdf8)" onclick="copyText(1)">Copy: Want to try a 7‑day app break together?</button>
-            <button class="copy" style="background:linear-gradient(90deg,#f59e0b,#ff8a65)" onclick="copyText(2)">Copy: Can I help you check your spending this week?</button>
-          </div>
-        </div>
-
-        <div style="margin-top:10px">
-          <div style="font-weight:700;margin-bottom:6px">Shareable checklist</div>
-          <div style="background:#fff;padding:10px;border-radius:8px">
-            <label><input type="checkbox" id="c1"> Try a 3-day app-free trial</label><br>
-            <label><input type="checkbox" id="c2"> Set a weekly money cap</label><br>
-            <label><input type="checkbox" id="c3"> Replace with a hobby or sport</label>
-          </div>
-        </div>
-
-        <div style="margin-top:12px;font-size:13px;color:var(--muted)">
-          <div style="margin-bottom:8px"><strong>Note:</strong> If someone is at risk of financial harm or self-harm, reach out to a trusted adult or professional right away.</div>
-          <div class="pill">Be kind • Stay close • No blame</div>
-        </div>
-      </aside>
-
+    <div class="quote">
+        "The future depends on what you do today." – Mahatma Gandhi
+    </div>
+    <div class="quote">
+        "Success is the sum of small efforts, repeated day in and day out." – Robert Collier
     </div>
 
-    <div class="card" style="margin-top:12px">
-      <h2 style="margin-top:0">Friendly approach script (short)</h2>
-      <p class="hint">Say it calmly, from a place of care.</p>
-      <div class="template" id="shortScript">Hey, I’ve noticed you’ve been betting more lately. I care about you — can we talk? I’m not judging, I just want to help.</div>
-      <div style="margin-top:8px">
-        <button class="btn" onclick="copyShort()">Copy script</button>
-        <button class="btn" style="background:transparent;border:1px solid rgba(30,144,255,0.12);color:var(--accent);margin-left:8px" onclick="downloadHTML()">Download page</button>
-      </div>
-    </div>
+    <button onclick="startTimer()">Start 25-Minute Focus Timer</button>
 
-    <div class="footer"> 
-      <div>Made with care by Aman · tech buddy Neo</div>
-      <div style="color:var(--muted);font-size:13px">Share it gently — one message can change a day.</div>
-    </div>
+    <div id="timer">25:00</div>
 
-  </div>
+    <script>
+        let timeLeft = 25 * 60;
+        let timerDisplay = document.getElementById("timer");
+        let timerRunning = false;
 
-  <script>
-    // Templates copy
-    document.querySelectorAll('#templates .template').forEach((el,i)=>{
-      el.style.cursor='pointer';
-      el.addEventListener('click',()=>{navigator.clipboard.writeText(el.dataset.text).then(()=>{alert('Copied to clipboard!')})});
-    });
+        function startTimer() {
+            if (timerRunning) return; // Prevent multiple timers
+            timerRunning = true;
+            timerDisplay.style.display = "block";
 
-    function copyText(i){
-      const msgs = [
-        'I’m here if you want to talk — no judgement.',
-        'Want to try a 7-day app break together? I’ll do it with you.',
-        'Can I help you check your spending this week? I’ll help and won’t judge.'
-      ];
-      navigator.clipboard.writeText(msgs[i]).then(()=>alert('Copied!'));
-    }
-    function copyShort(){
-      navigator.clipboard.writeText(document.getElementById('shortScript').innerText).then(()=>alert('Script copied'));
-    }
+            const timerInterval = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
 
-    // Download the current page as HTML
-    function downloadHTML(){
-      const content = '<!doctype html>'+document.documentElement.outerHTML;
-      const blob = new Blob([content],{type:'text/html'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'friendly-support.html'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-    }
-  </script>
+                seconds = seconds < 10 ? '0' + seconds : seconds;
+                timerDisplay.textContent = `${minutes}:${seconds}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.textContent = "🎉 Great job! Take a break!";
+                    timerRunning = false;
+                } else {
+                    timeLeft--;
+                }
+            }, 1000);
+        }
+    </script>
+
 </body>
 </html>
-
-  
