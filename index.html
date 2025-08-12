@@ -1,87 +1,430 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Stay Inspired to Study</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f0f8ff;
-            text-align: center;
-            padding: 40px;
-            color: #333;
-        }
-        h1 {
-            color: #2c3e50;
-        }
-        .quote {
-            font-size: 1.5em;
-            margin: 20px auto;
-            max-width: 600px;
-            font-style: italic;
-        }
-        button {
-            padding: 12px 24px;
-            font-size: 1em;
-            background-color: #27ae60;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            margin-top: 20px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #1e8449;
-        }
-        #timer {
-            font-size: 2em;
-            margin-top: 20px;
-            display: none;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Aman's Smart Checklist — Neo</title>
+<style>
+    :root {
+      --bg: #0a0f1c;
+      --card: #121a2e;
+      --accent: #ff6ec7;
+      --accent2: #4fd1c5;
+      --text: #f8f9fa;
+      --muted: #9ca3af;
+      --success: #10b981;
+      --danger: #ef4444;
+      font-family: 'Poppins', sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top left, var(--accent) 0%, var(--bg) 40%), radial-gradient(circle at bottom right, var(--accent2) 0%, var(--bg) 40%);
+      background-blend-mode: screen;
+      color: var(--text);
+    }
+    .app {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 20px;
+      height: 100vh;
+      padding: 20px;
+    }
+    .sidebar {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+    .logo {
+      width: 50px; height: 50px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 12px;
+      font-size: 20px; font-weight: bold;
+    }
+    h1 {
+      font-size: 18px;
+      margin: 0;
+    }
+    .list-item {
+      padding: 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: background 0.2s ease;
+    }
+    .list-item:hover {
+      background: rgba(255, 255, 255, 0.07);
+    }
+    .list-item.active {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      color: black;
+      font-weight: bold;
+    }
+    .main {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .topbar {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    input, select, textarea {
+      background: rgba(255, 255, 255, 0.05);
+      border: none;
+      border-radius: 10px;
+      padding: 10px;
+      color: var(--text);
+    }
+    .btn {
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .btn.primary {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      color: black; font-weight: bold;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+    }
+    .task {
+      display: flex; gap: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 12px;
+      border-radius: 12px;
+      align-items: center;
+      transition: background 0.2s ease;
+    }
+    .task:hover {
+      background: rgba(255, 255, 255, 0.07);
+    }
+    .tag {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+    }
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="app" id="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">N</div>
+        <div>
+          <h1>Aman's Smart Checklist</h1>
+          <div class="small">Made by Aman • Neo</div>
+        </div>
+      </div>
 
-    <h1>📚 Let's Get Inspired to Study!</h1>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <input id="new-list-name" placeholder="New list name" style="flex:1;padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04)" />
+        <button class="btn" id="create-list">Add</button>
+      </div>
 
-    <div class="quote">
-        "The future depends on what you do today." – Mahatma Gandhi
-    </div>
-    <div class="quote">
-        "Success is the sum of small efforts, repeated day in and day out." – Robert Collier
-    </div>
+      <div class="lists" id="lists"></div>
 
-    <button onclick="startTimer()">Start 25-Minute Focus Timer</button>
+      <div style="margin-top:12px;display:flex;gap:6px;align-items:center;justify-content:space-between">
+        <div class="small">Theme</div>
+        <div>
+          <button class="btn" id="export">Export</button>
+          <button class="btn" id="import-btn">Import</button>
+        </div>
+      </div>
+      <input type="file" id="import-file" style="display:none" accept="application/json" />
+    </aside>
 
-    <div id="timer">25:00</div>
+    <main class="main">
+      <div class="topbar">
+        <div class="search">
+          <input id="search" placeholder="Search tasks, tags, notes..." />
+          <select id="filter">
+            <option value="all">All</option>
+            <option value="overdue">Overdue</option>
+            <option value="today">Due Today</option>
+            <option value="high">High Priority</option>
+            <option value="done">Completed</option>
+          </select>
+        </div>
 
-    <script>
-        let timeLeft = 25 * 60;
-        let timerDisplay = document.getElementById("timer");
-        let timerRunning = false;
+        <div class="controls">
+          <button class="btn" id="add-task-btn">+ Task</button>
+          <button class="btn" id="notify-perm">Enable Reminders</button>
+        </div>
+      </div>
 
-        function startTimer() {
-            if (timerRunning) return; // Prevent multiple timers
-            timerRunning = true;
-            timerDisplay.style.display = "block";
+      <div class="board">
+        <section class="card" id="task-area">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <h2 id="current-list-title">Select or create a list</h2>
+            <div class="small" id="progress-summary"></div>
+          </div>
 
-            const timerInterval = setInterval(() => {
-                let minutes = Math.floor(timeLeft / 60);
-                let seconds = timeLeft % 60;
+          <div id="tasks"></div>
 
-                seconds = seconds < 10 ? '0' + seconds : seconds;
-                timerDisplay.textContent = `${minutes}:${seconds}`;
+          <div style="margin-top:10px;display:none" id="empty-note" class="muted">No tasks yet — add one using + Task or import a list.</div>
+        </section>
 
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    timerDisplay.textContent = "🎉 Great job! Take a break!";
-                    timerRunning = false;
-                } else {
-                    timeLeft--;
-                }
-            }, 1000);
-        }
-    </script>
+        <aside class="card" id="inspector">
+          <h3>Task editor</h3>
+          <div style="margin-top:8px">
+            <div class="form-row"><input id="task-title" placeholder="Task title" style="flex:1" /></div>
+            <div style="height:8px"></div>
+            <textarea id="task-notes" placeholder="Notes (optional)"></textarea>
+            <div style="height:8px"></div>
+            <div class="form-row">
+              <input type="date" id="task-due" />
+              <select id="task-priority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select>
+            </div>
+            <div style="height:8px"></div>
+            <input id="task-tags" placeholder="Comma-separated tags (e.g. lab,buy)" />
+            <div style="height:8px"></div>
+            <div style="display:flex;gap:8px"><button class="btn primary" id="save-task">Save</button><button class="btn muted-btn" id="delete-task">Delete</button></div>
+          </div>
 
+          <hr style="margin:12px 0;opacity:0.06" />
+          <div style="font-size:13px;color:var(--muted)">Quick actions</div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn" id="clear-done">Clear completed</button>
+            <button class="btn" id="sort-by-date">Sort by due</button>
+          </div>
+        </aside>
+      </div>
+
+      <footer style="text-align:center;color:var(--muted);font-size:13px">Tip: tasks are saved locally. Export to backup or import on another device.</footer>
+    </main>
+  </div>
+
+  <script>
+    // === Simple persistent store ===
+    const DB_KEY = 'neo_checklists_v1';
+    let store = JSON.parse(localStorage.getItem(DB_KEY) || '{}');
+    if(!store.lists){ store = {lists:[], activeListId: null, settings:{}} }
+
+    // ==== helpers ====
+    function uid(t=6){ return Math.random().toString(36).slice(2,2+t) }
+    function save(){ localStorage.setItem(DB_KEY, JSON.stringify(store)); }
+
+    // ==== DOM refs ====
+    const listsEl = document.getElementById('lists');
+    const createListBtn = document.getElementById('create-list');
+    const newListName = document.getElementById('new-list-name');
+    const currentListTitle = document.getElementById('current-list-title');
+    const tasksEl = document.getElementById('tasks');
+    const progressSummary = document.getElementById('progress-summary');
+    const addTaskBtn = document.getElementById('add-task-btn');
+    const inspector = document.getElementById('inspector');
+
+    const taskTitle = document.getElementById('task-title');
+    const taskNotes = document.getElementById('task-notes');
+    const taskDue = document.getElementById('task-due');
+    const taskPriority = document.getElementById('task-priority');
+    const taskTags = document.getElementById('task-tags');
+    const saveTaskBtn = document.getElementById('save-task');
+    const deleteTaskBtn = document.getElementById('delete-task');
+
+    const searchInput = document.getElementById('search');
+    const filterSelect = document.getElementById('filter');
+    const exportBtn = document.getElementById('export');
+    const importBtn = document.getElementById('import-btn');
+    const importFile = document.getElementById('import-file');
+    const notifyPermBtn = document.getElementById('notify-perm');
+
+    // === initialize ===
+    renderLists();
+
+    // ==== List management ====
+    createListBtn.onclick = ()=>{
+      const name = newListName.value.trim() || 'Untitled';
+      const id = uid(8);
+      store.lists.push({id,name,created:Date.now(),tasks:[]});
+      store.activeListId = id;
+      newListName.value=''; save(); renderLists();
+    }
+
+    function renderLists(){
+      listsEl.innerHTML='';
+      store.lists.forEach(lst=>{
+        const div = document.createElement('div');
+        div.className = 'list-item' + (lst.id===store.activeListId? ' active':'');
+        div.innerHTML = `<div style="display:flex;flex-direction:column"><strong>${escapeHtml(lst.name)}</strong><span class=small>${lst.tasks.length} tasks</span></div>`;
+        div.onclick = ()=>{ store.activeListId = lst.id; save(); renderLists(); renderActiveList(); }
+        const a = document.createElement('div'); a.className='list-actions';
+        const del = document.createElement('button'); del.className='btn'; del.textContent='×'; del.title='Delete list';
+        del.onclick = (e)=>{ e.stopPropagation(); if(confirm('Delete list and tasks?')){ store.lists = store.lists.filter(x=>x.id!==lst.id); if(store.activeListId===lst.id) store.activeListId = store.lists[0]?.id || null; save(); renderLists(); renderActiveList(); } }
+        a.appendChild(del);
+        div.appendChild(a);
+        listsEl.appendChild(div);
+      });
+      renderActiveList();
+    }
+
+    function getActiveList(){ return store.lists.find(l=>l.id===store.activeListId) }
+
+    function renderActiveList(){
+      const list = getActiveList();
+      if(!list){ currentListTitle.textContent='Select or create a list'; tasksEl.innerHTML=''; progressSummary.textContent=''; return }
+      currentListTitle.textContent = list.name;
+      renderTasks(list.tasks);
+      renderProgress(list.tasks);
+    }
+
+    // ==== Tasks ====
+    let editingTaskId = null;
+
+    addTaskBtn.onclick = ()=>{
+      const list = getActiveList(); if(!list){ alert('Create a list first'); return }
+      const t = {id: uid(8), title:'New task', notes:'', due:null, priority:'medium', tags:[], done:false, subtasks:[], created:Date.now(), order: list.tasks.length}
+      list.tasks.unshift(t); editingTaskId = t.id; save(); renderActiveList(); openInspector(t.id);
+    }
+
+    function renderTasks(tasks){
+      const q = searchInput.value.trim().toLowerCase();
+      const f = filterSelect.value;
+      const list = getActiveList();
+      let ts = [...tasks];
+      // simple filters
+      ts = ts.filter(task=>{
+        if(q){ if(!(task.title+task.notes+(task.tags||[]).join(' ')).toLowerCase().includes(q)) return false }
+        if(f==='overdue'){ if(!task.due) return false; if(new Date(task.due) >= startOfDay(new Date())) return false }
+        if(f==='today'){ if(!task.due) return false; const d = new Date(task.due); const today = startOfDay(new Date()); if(d<today || d>= nextDay(today)) return false }
+        if(f==='high'){ if(task.priority!=='high') return false }
+        if(f==='done'){ if(!task.done) return false }
+        return true
+      })
+
+      // sort by order then due
+      ts.sort((a,b)=> (a.order||0)-(b.order||0) || (a.due?new Date(a.due):9e15)-(b.due?new Date(b.due):9e15));
+
+      tasksEl.innerHTML='';
+      if(!ts.length){ document.getElementById('empty-note').style.display='block'; return } else document.getElementById('empty-note').style.display='none';
+
+      ts.forEach(task=>{
+        const div = document.createElement('div'); div.className='task'; div.draggable=true; div.dataset.id=task.id;
+        div.innerHTML = `
+          <div style="width:30px;display:grid;place-items:center">
+            <input type="checkbox" ${task.done?'checked':''} />
+          </div>
+          <div class="meta">
+            <div style="display:flex;justify-content:space-between;gap:8px">
+              <div style="flex:1"><div class="title">${escapeHtml(task.title)}</div><div class="muted">${task.notes?escapeHtml(task.notes):''}</div></div>
+              <div style="text-align:right" class="right-meta">
+                ${task.due?`<div class=small>${new Date(task.due).toLocaleDateString()}</div>`: ''}
+                <div class=small>${task.priority}</div>
+              </div>
+            </div>
+            <div class="tags">${(task.tags||[]).map(t=>`<span class=tag>${escapeHtml(t)}</span>`).join('')}</div>
+            <div style="height:6px"></div>
+            <div class="progress"><i style="width:${progressPercent(task)}%"></i></div>
+          </div>
+        `;
+
+        // events
+        div.querySelector('input[type=checkbox]').onchange = (e)=>{ task.done = e.target.checked; save(); renderActiveList(); }
+        div.ondblclick = ()=>{ openInspector(task.id) }
+
+        // drag events for reorder
+        div.addEventListener('dragstart', (e)=>{ div.classList.add('dragging'); e.dataTransfer.setData('text/plain', task.id) })
+        div.addEventListener('dragend', ()=>{ div.classList.remove('dragging') })
+
+        tasksEl.appendChild(div);
+      })
+
+      // allow dropping to reorder
+      tasksEl.ondragover = (e)=>{ e.preventDefault(); const after = getDragAfterElement(tasksEl, e.clientY); const dragging = document.querySelector('.dragging'); if(after==null) tasksEl.appendChild(dragging); else tasksEl.insertBefore(dragging, after) }
+      tasksEl.ondrop = ()=>{ // update order
+        const ids = Array.from(tasksEl.children).map(c=>c.dataset.id);
+        const list = getActiveList(); ids.forEach((id,i)=>{ const t = list.tasks.find(x=>x.id===id); if(t) t.order = i }); save(); renderActiveList();
+      }
+
+    }
+
+    function getDragAfterElement(container, y){ const draggableElements = [...container.querySelectorAll('.task:not(.dragging)')]; return draggableElements.reduce((closest, child)=>{ const box = child.getBoundingClientRect(); const offset = y - box.top - box.height/2; if(offset<0 && offset>closest.offset) return {offset, element: child}; else return closest }, {offset: Number.NEGATIVE_INFINITY}).element }
+
+    function openInspector(id){ const list = getActiveList(); const t = list.tasks.find(x=>x.id===id); if(!t) return; editingTaskId = id; taskTitle.value = t.title; taskNotes.value = t.notes; taskDue.value = t.due? new Date(t.due).toISOString().slice(0,10):''; taskPriority.value = t.priority; taskTags.value = (t.tags||[]).join(','); inspector.scrollIntoView({behavior:'smooth'}); }
+
+    saveTaskBtn.onclick = ()=>{
+      const list = getActiveList(); if(!list) return;
+      if(!editingTaskId){ alert('Pick a task by double-clicking it to edit or create a new one.'); return }
+      const t = list.tasks.find(x=>x.id===editingTaskId);
+      t.title = taskTitle.value.trim() || 'Untitled';
+      t.notes = taskNotes.value.trim();
+      t.due = taskDue.value? new Date(taskDue.value).toISOString():null;
+      t.priority = taskPriority.value; t.tags = taskTags.value? taskTags.value.split(',').map(s=>s.trim()).filter(Boolean):[];
+      save(); renderActiveList();
+      scheduleReminderForTask(t);
+    }
+
+    deleteTaskBtn.onclick = ()=>{
+      const list = getActiveList(); if(!list || !editingTaskId) return; if(!confirm('Delete this task?')) return; list.tasks = list.tasks.filter(x=>x.id!==editingTaskId); editingTaskId = null; save(); renderActiveList(); }
+
+    document.getElementById('clear-done').onclick = ()=>{ const list = getActiveList(); if(!list) return; list.tasks = list.tasks.filter(t=>!t.done); save(); renderActiveList(); }
+    document.getElementById('sort-by-date').onclick = ()=>{ const list = getActiveList(); if(!list) return; list.tasks.sort((a,b)=> (a.due?new Date(a.due):9e15)-(b.due?new Date(b.due):9e15)); save(); renderActiveList(); }
+
+    // ==== small utils ====
+    function escapeHtml(s){ return (s+'').replace(/[&<>"]/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' })[c]) }
+    function progressPercent(t){ if(!t.subtasks || !t.subtasks.length) return t.done?100: (t.done?100:0); const done = t.subtasks.filter(s=>s.done).length; return Math.round((done/t.subtasks.length)*100) }
+    function startOfDay(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()) }
+    function nextDay(d){ const x = new Date(d); x.setDate(x.getDate()+1); return x }
+
+    // ==== search/filter events ====
+    searchInput.oninput = ()=> renderActiveList(); filterSelect.onchange = ()=> renderActiveList();
+
+    // ==== export/import ====
+    exportBtn.onclick = ()=>{
+      const data = JSON.stringify(store, null, 2);
+      const blob = new Blob([data], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'neo_checklists_backup.json'; a.click(); URL.revokeObjectURL(url);
+    }
+
+    importBtn.onclick = ()=> importFile.click();
+    importFile.onchange = (e)=>{
+      const f = e.target.files[0]; if(!f) return; const reader = new FileReader(); reader.onload = ()=>{ try{ const j = JSON.parse(reader.result); if(j.lists){ store = j; save(); renderLists(); alert('Imported.'); } else alert('Invalid file'); }catch(err){alert('Invalid JSON file')} } ; reader.readAsText(f);
+    }
+
+    // ==== notifications / reminders (simple) ====
+    notifyPermBtn.onclick = async ()=>{
+      if(!('Notification' in window)){ alert('Notifications not supported'); return }
+      const p = await Notification.requestPermission(); if(p==='granted') alert('Notifications allowed. Reminders will fire while this page is open.'); else alert('Notification permission: '+p);
+    }
+
+    const scheduledTimers = {};
+    function scheduleAll(){ const list = getActiveList(); if(!list) return; list.tasks.forEach(scheduleReminderForTask) }
+    function scheduleReminderForTask(t){ try{ if(!t.due) return; const when = new Date(t.due).getTime(); // simple: schedule at 9:00am of that date
+        const fireAt = new Date(when); fireAt.setHours(9,0,0,0); const delay = fireAt.getTime() - Date.now(); if(delay<=0) return; if(scheduledTimers[t.id]) clearTimeout(scheduledTimers[t.id]); scheduledTimers[t.id] = setTimeout(()=>{ showNotification(t); delete scheduledTimers[t.id]; }, delay); }catch(e){console.warn(e)} }
+    function showNotification(t){ if(Notification.permission==='granted'){ const n = new Notification(t.title || 'Task reminder', {body: (t.notes? t.notes+' • ':'') + (t.due? new Date(t.due).toLocaleString() : '' )}); n.onclick = ()=>window.focus(); } }
+
+    // schedule for active list on load
+    window.addEventListener('load', ()=>{ renderLists(); renderActiveList(); scheduleAll(); })
+
+    // small UX: open first list if exists
+    if(!store.activeListId && store.lists[0]) store.activeListId = store.lists[0].id;
+
+    // helper to show percent in header
+    function renderProgress(tasks){ if(!tasks) return; const done = tasks.filter(t=>t.done).length; const tot = tasks.length; progressSummary.textContent = tot? `${done}/${tot} done`: '' }
+
+    // small keyboard shortcuts
+    window.addEventListener('keydown', (e)=>{
+      if(e.ctrlKey && e.key==='k'){ e.preventDefault(); searchInput.focus() }
+      if(e.ctrlKey && e.key==='n'){ e.preventDefault(); newListName.focus() }
+    })
+
+  </script>
 </body>
 </html>
