@@ -4,6 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Aman's Smart Checklist — Neo</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ff6ec7"/>
 <style>
     :root {
       --bg: #0a0f1c;
@@ -209,7 +211,7 @@
       <footer style="text-align:center;color:var(--muted);font-size:13px">Tip: tasks are saved locally. Export to backup or import on another device.</footer>
     </main>
   </div>
-
+<div id="app">Loading...</div>
   <script>
     // === Simple persistent store ===
     const DB_KEY = 'neo_checklists_v1';
@@ -425,6 +427,108 @@
       if(e.ctrlKey && e.key==='n'){ e.preventDefault(); newListName.focus() }
     })
 
+// PWA registration
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then(()=>console.log('Service Worker Registered'));
+}
+
+// Store data
+const DB_KEY = 'neo_checklists_v2';
+let store = JSON.parse(localStorage.getItem(DB_KEY) || '{}');
+if(!store.lists) store = {lists:[], activeListId:null, settings:{}};
+
+function save(){localStorage.setItem(DB_KEY, JSON.stringify(store));}
+
+// Add recurring tasks
+function addRecurringTask(listId, title, intervalDays) {
+  const list = store.lists.find(l=>l.id===listId);
+  if(!list) return;
+  const due = new Date();
+  due.setDate(due.getDate() + intervalDays);
+  list.tasks.push({id:Date.now()+"", title, due:due.toISOString(), intervalDays, done:false});
+  save();
+}
+
+// Auto-generate next occurrence when done
+function completeTask(task) {
+  task.done = true;
+  if(task.intervalDays) {
+    const due = new Date(task.due);
+    due.setDate(due.getDate() + task.intervalDays);
+    store.lists.find(l=>l.tasks.includes(task)).tasks.push({
+      id:Date.now()+"",
+      title:task.title,
+      due:due.toISOString(),
+      intervalDays:task.intervalDays,
+      done:false
+    });
+  }
+  save();
+}
+
+// Advanced reminders
+async function scheduleReminder(task) {
+  if(Notification.permission !== 'granted') {
+    await Notification.requestPermission();
+  }
+  if(Notification.permission === 'granted') {
+    const when = new Date(task.due).getTime() - Date.now();
+    if(when > 0) {
+      setTimeout(()=>{
+        new Notification(task.title, {body: 'Due: ' + new Date(task.due).toLocaleString()});
+      }, when);
+    }
+  }
+}
+
+// Quick add parser
+function quickAdd(input, listId) {
+  let title = input;
+  let tags = [];
+  let due = null;
+  let priority = 'medium';
+  const tagMatch = input.match(/#(\w+)/g);
+  if(tagMatch) tags = tagMatch.map(t=>t.slice(1));
+  const dateMatch = input.match(/@(\w+)/);
+  if(dateMatch) {
+    if(dateMatch[1]==='tomorrow') {
+      due = new Date();
+      due.setDate(due.getDate()+1);
+    }
+  }
+  if(/!high/.test(input)) priority='high';
+  title = title.replace(/[#@!].*/g,'').trim();
+  const list = store.lists.find(l=>l.id===listId);
+  if(list) {
+    list.tasks.push({id:Date.now()+"", title, tags, due: due?due.toISOString():null, priority, done:false});
+    save();
+  }
+}
+
+// Render function placeholder
+function render(){
+  document.getElementById('app').innerHTML = '<h1>Checklist App Ready with PWA & Reminders</h1>';
+}
+
+render();
   </script>
 </body>
 </html>
+<!-- manifest.json -->
+{
+  "name": "Aman's Smart Checklist",
+  "short_name": "Checklist",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0a0f1c",
+  "theme_color": "#ff6ec7",
+  "icons": []
+}
+
+<!-- sw.js -->
+self.addEventListener('install', e=>{
+  e.waitUntil(caches.open('neo-checklist-v1').then(cache=>cache.addAll(['./'])));
+});
+self.addEventListener('fetch', e=>{
+  e.respondWith(caches.match(e.request).then(resp=>resp || fetch(e.request)));
+});
