@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokédex</title>
+    <title>Full Pokédex</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -24,46 +24,85 @@
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            width: 120px;
+            width: 220px;
             padding: 10px;
+            text-align: left;
         }
         .pokemon-card img {
             width: 100px;
+            display: block;
+            margin: 0 auto;
         }
         .pokemon-card h3 {
-            margin: 10px 0 0 0;
-            font-size: 14px;
             text-transform: capitalize;
+            margin: 10px 0 5px 0;
+            text-align: center;
+        }
+        .stats {
+            font-size: 12px;
+        }
+        .types {
+            margin: 5px 0;
+            font-weight: bold;
+        }
+        .evolutions {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #555;
         }
     </style>
 </head>
 <body>
-    <h1>Pokédex</h1>
+    <h1>Full Pokédex</h1>
     <div class="pokedex" id="pokedex"></div>
 
     <script>
         const pokedex = document.getElementById('pokedex');
 
-        async function fetchPokemons() {
-            const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1000');
+        async function fetchPokemon(id) {
+            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
             const data = await response.json();
-            const pokemons = data.results;
+            return data;
+        }
 
-            for (let i = 0; i < pokemons.length; i++) {
-                const pokemon = pokemons[i];
-                const id = i + 1; // Pokémon ID to get sprite
+        async function fetchEvolution(pokemonId) {
+            const speciesResponse = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonId}`);
+            const speciesData = await speciesResponse.json();
+            const evoResponse = await fetch(speciesData.evolution_chain.url);
+            const evoData = await evoResponse.json();
+
+            let evolutions = [];
+            let evoChain = evoData.chain;
+            do {
+                evolutions.push(evoChain.species.name);
+                evoChain = evoChain.evolves_to[0];
+            } while (evoChain && evoChain.hasOwnProperty('evolves_to'));
+
+            return evolutions.join(" → ");
+        }
+
+        async function displayPokemons(limit = 50) {
+            for (let id = 1; id <= limit; id++) { // use 50 for demo, can set to 1000
+                const pokemon = await fetchPokemon(id);
+                const evolutions = await fetchEvolution(id);
+
+                const types = pokemon.types.map(t => t.type.name).join(", ");
+                const stats = pokemon.stats.map(s => `${s.stat.name}: ${s.base_stat}`).join(", ");
 
                 const card = document.createElement('div');
                 card.classList.add('pokemon-card');
                 card.innerHTML = `
-                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png" alt="${pokemon.name}">
+                    <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
                     <h3>${pokemon.name}</h3>
+                    <div class="types">Type: ${types}</div>
+                    <div class="stats">Stats: ${stats}</div>
+                    <div class="evolutions">Evolutions: ${evolutions}</div>
                 `;
                 pokedex.appendChild(card);
             }
         }
 
-        fetchPokemons();
+        displayPokemons(); // fetch first 50 for demo
     </script>
 </body>
 </html>
